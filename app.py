@@ -37,5 +37,10 @@ def guardar():
     return redirect(url_for("inicio"))
 
 
+@app.route("/limpiar")
+def limpiar():
+    return redirect(url_for("inicio"))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
