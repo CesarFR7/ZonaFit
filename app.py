@@ -56,5 +56,13 @@ def editar(id):
     )
 
 
+@app.route("/eliminar/<int:id>")
+def eliminar(id):
+    cliente = Cliente(id=id)
+    cliente_eliminado = ClienteDAO
+    cliente_eliminado.eliminar(cliente)
+    return redirect(url_for("inicio"))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
