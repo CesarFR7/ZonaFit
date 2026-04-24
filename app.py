@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from cliente_dao import ClienteDAO
 from cliente import Cliente
 from cliente_forma import ClienteForma
@@ -21,6 +21,20 @@ def inicio():
     return render_template(
         "index.html", titulo=titulo_app, clientes=clientes_db, forma=cliente_form
     )
+
+
+@app.route("/guardar", methods=["POST"])
+def guardar():
+    # Creamos los objetos de cliente, inicialmente objetos vacíos
+    cliente = Cliente()
+    cliente_form = ClienteForma(obj=cliente)
+    if cliente_form.validate_on_submit():
+        # Llenamos el objeto cliente con los valores de formulario
+        cliente_form.populate_obj(cliente)
+        # Guardamos el nuevo cliente en la BD
+        ClienteDAO.insertar(cliente)
+    # Redireccionar a la pagína de inicio
+    return redirect(url_for("inicio"))
 
 
 if __name__ == "__main__":
