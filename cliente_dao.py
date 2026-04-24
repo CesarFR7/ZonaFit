@@ -4,6 +4,7 @@ from cliente import Cliente
 
 class ClienteDAO:
     SELECCIONAR = "SELECT * FROM cliente ORDER BY id"
+    SELECCIONAR_ID = "SELECT * FROM cliente WHERE id = %s"
     INSERTAR = "INSERT INTO cliente(nombre, apellido, membresia) VALUES(%s,%s,%s)"
     ACTUALIZAR = "UPDATE cliente SET nombre=%s, apellido=%s, membresia=%s WHERE id=%s"
     ELIMINAR = "DELETE FROM cliente WHERE id=%s"
@@ -24,6 +25,25 @@ class ClienteDAO:
             return clientes
         except Exception as e:
             print(f"Ocurrio un error al seleccinar clientes: {e}")
+        finally:
+            if conexion is not None:
+                cursor.close()
+                Conexion.liberar_conexion(conexion)
+
+    @classmethod
+    def seleccionar_id(cls, id):
+        conexion = None
+        try:
+            conexion = Conexion.obtener_conexion()
+            cursor = conexion.cursor()
+            valor = (id,)
+            cursor.execute(cls.SELECCIONAR_ID, valor)
+            registro = cursor.fetchone()
+            # Mapeo de clase-tabla cliente
+            cliente = Cliente(registro[0], registro[1], registro[2], registro[3])
+            return cliente
+        except Exception as e:
+            print(f"Ocurrio un error al seleccinar clientes por id: {e}")
         finally:
             if conexion is not None:
                 cursor.close()
@@ -94,12 +114,16 @@ if __name__ == "__main__":
     # clientes_actalizados = ClienteDAO.actualizar(cliente2)
     # print(f"Clientes actualizados: {clientes_actalizados}")
 
-    # Eliminar cliente
-    cliente3 = Cliente(id=3)
-    cliente_eliminado = ClienteDAO.eliminar(cliente3)
-    print(f"Clientes eliminados: {cliente_eliminado}")
+    # # Eliminar cliente
+    # cliente3 = Cliente(id=3)
+    # cliente_eliminado = ClienteDAO.eliminar(cliente3)
+    # print(f"Clientes eliminados: {cliente_eliminado}")
 
-    # Seleccionar los clientes
-    clientes = ClienteDAO.seleccionar()
-    for cliente in clientes:
-        print(cliente)
+    # # Seleccionar los clientes
+    # clientes = ClienteDAO.seleccionar()
+    # for cliente in clientes:
+    #     print(cliente)
+
+        # Seleccionar los clientes
+    cliente = ClienteDAO.seleccionar_id(1)
+    print(cliente)
