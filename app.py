@@ -5,6 +5,8 @@ from cliente_forma import ClienteForma
 
 app = Flask(__name__)
 
+app.config["SECRET_KEY"] = "llave_secreta"
+
 titulo_app = "Zona Fit (GYM)"
 
 
